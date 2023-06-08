@@ -36,4 +36,36 @@ docker history alpine
 > Remove image
 ```
 docker image remove alpine
+docker rmi alphine
 ```
+
+# 10. Running Containers
+
+> Run wernight/funbox
+```
+docker run -it wernight/funbox
+```
+
+> Check the help of docker run
+```
+docker run --help
+```
+
+> List docker containers
+```
+docker ps -a
+```
+
+> Remove a docker container
+```
+docker rm [ id / name ]
+```
+
+> Override the default command in a Docker container when running it
+```
+docker run -it --rm wernight/funbox nyancat
+docker run -it --rm wernight/funbox bash
+```
+Notice the layers with USER and CMD
+
+# 13.Container Networking Services and Volumns
