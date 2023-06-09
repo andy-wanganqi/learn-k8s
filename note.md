@@ -102,3 +102,28 @@ echo " Something" >> /usr/share/nginx/html/index.html
 docker run -d --rm -p 80:80 -v [local folder]:/usr/share/nginx/html nginx
 ```
 * -v local_folder:/usr/share/nginx/html will mount local folder to container as a volumn
+
+# 16. Building Container Images
+In this section, check the cmatrix folder, it will dive into creating a cmatrix docker image from alpine.
+
+> Build a docker image
+```
+docker build . -t andywanganqi/cmatrix
+```
+
+> Run a container and check the user with whoami
+```
+docker run --rm -it andywanganqi/cmatrix whoami
+```
+
+> Build a docker image with multi arch and push
+```
+docker buildx create --use --name buildx-multi-linux
+docker buildx use buildx-multi-linux
+docker buildx build --no-cache --platform linux/386,linux/amd64,linux/arm64/v8,linux/arm/v6,linux/arm/v7,linux/ppc64le,linux/s390x . -t andywanganqi/cmatrix --push
+```
+
+> Clean temp resources
+```
+docker system prune
+```

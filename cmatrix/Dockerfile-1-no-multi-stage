@@ -1,0 +1,28 @@
+# A Dockerfile must begin with a FROM instruction. The FROM instruction specifies the parent image from which you are building
+FROM alpine
+
+# LABEL is an official way to put some comments for the whole Dockerfile
+LABEL org.opencontainers.image.authors="Andy Wang" \
+      org.opencontainers.image.description="Container image for https://github.com/abishekvashok/cmatrix"
+
+# Alpine Package keeper (APK) is the tool used to install, upgrade or delete software on a running system within Alpine
+# Upgrade and install git: 
+#   apk upgrade
+#   apk add git
+
+#WORKDIR sets the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow in the Dockerfile
+WORKDIR cmatrix
+#  If the WORKDIR does not exist, it will be created
+
+# RUN the command specified as an image build state, the state of the container after a RUN command will become a container layer
+RUN apk update && \
+    apk add git autoconf automake alpine-sdk ncurses-dev ncurses-static && \
+    git clone https://github.com/andy-wanganqi/cmatrix.git . && \
+    autoreconf -i && \
+    mkdir -p /usr/lib/kbd/consolefonts /usr/share/consolefonts && \
+    ./configure LDFLAGS="-static" && \
+    make
+
+#CMD the command that a container executes by default when a container is launched
+#ENTRYPOINT can change the functionality of CMD
+CMD ["./cmatrix"]
