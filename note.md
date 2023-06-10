@@ -120,10 +120,60 @@ docker run --rm -it andywanganqi/cmatrix whoami
 ```
 docker buildx create --use --name buildx-multi-linux
 docker buildx use buildx-multi-linux
-docker buildx build --no-cache --platform linux/386,linux/amd64,linux/arm64/v8,linux/arm/v6,linux/arm/v7,linux/ppc64le,linux/s390x . -t andywanganqi/cmatrix --push
+docker buildx build --no-cache --platform linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6 . -t andywanganqi/cmatrix --push
 ```
+Other linux platform: linux/386, linux/ppc64le, linux/s390x
 
 > Clean temp resources
 ```
 docker system prune
+```
+
+# 24. Container Runtimes
+* Docker, containerd and runc
+* CRI-O, Kata Containers and gVisor
+* cri-dockerd, Mirantis: https://github.com/Mirantis/cri-dockerd
+
+# 26. Hands on with Container Runtimes
+```
+docker run --rm -it ubuntu bash
+```
+Docker command as above is based on the runtime
+
+Trying to use ctr to manage the container lifecycle:
+```
+ctr images pull docker.io/library/ubuntu:latest
+ctr run -t -d docker.iio/library/ubuntu:latest quirky-name
+ctr container list
+ctr task list
+ps -ef --forest
+ctr task attach quirky-name
+ctr container delete quirky-name
+```
+
+## About nerdctl
+Install nerdctl, and its dependency of cni
+```
+ls -l /resources/*linux*
+tar -xzvf /resources/nerdctl-1.1.0-linux.tar.gz --directory /usr/local/bin nerdctl
+tar -xzvf /resources/cni-plugins-linux-v1.2.0.tgz -C /opt/cni/bin
+```
+
+nerdctl network is supported by cni
+```
+nerdctl run --rm -it ubuntu bash
+apt update
+apt install -y iproute2
+ip addr
+```
+
+cni config is created, and we can make a backup of it
+```
+cat /etc/cni/net.d/nerdctl-bridge.conflist
+mv /etc/cni/net.d/nerdctl-bridge.conflist /resources
+```
+
+Then we can run a container by nerdctl
+```
+nerdctl run --rm -it quirky-name ubuntu bash
 ```
