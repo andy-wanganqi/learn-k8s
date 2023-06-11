@@ -258,3 +258,10 @@ nerdctl namespace ls
 nerdctl -n k8s.io ps -a
 ```
 
+Start a pod with --restart=Never and env, and then delete it
+```
+kubectl run alpine --image=alpine --env="MY_VARIABLE=Hello, Kubernetes!" --restart=Never -it -- /bin/sh
+env
+kubectl delete pod/alpine
+```
+
