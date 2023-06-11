@@ -236,3 +236,25 @@ Here is okay to remove it as learning kubernetes
 kubectl taint node control-plane node-role.kubernetes.io/control-plane:NoSchedule-
 ```
 
+# 31. Kubernetes Pods
+Pod is the smallest deployable compute unit you can create and manage in kubernetes.
+
+Pod provides shared networking and storage for one or more containers.
+
+You can think of a pod as an isolated host with the serving the needs of the application it serves.
+
+Containers run within the pod and will share networking of that provided by the pod.
+
+Run nginx in kubernetes and watch it:
+```
+kubectl run nginx --image=nginx; watch kubectl get pods -o wide
+kubectl get pods -o wide
+```
+
+Check the containers and check the namespace of kubernetes that is k8s.io
+```
+nerdctl ps -a
+nerdctl namespace ls
+nerdctl -n k8s.io ps -a
+```
+
