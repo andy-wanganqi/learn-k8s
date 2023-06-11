@@ -152,7 +152,7 @@ ctr container delete quirky-name
 ```
 
 ## About nerdctl
-Install nerdctl, and its dependency of cni
+Install nerdctl, and its dependency of cni (Lab resources)
 ```
 ls -l /resources/*linux*
 tar -xzvf /resources/nerdctl-1.1.0-linux.tar.gz --directory /usr/local/bin nerdctl
@@ -177,3 +177,62 @@ Then we can run a container by nerdctl
 ```
 nerdctl run --rm -it quirky-name ubuntu bash
 ```
+
+# 28 Installing Kubernetes
+Some tools can be used for kubernetes: K3D, K3S, MicroK8s, Kind.
+
+Kubeadm is more suitable for learning k8s. Kubeadm built clusters are often referenced in the official kubernetes exams.
+
+Kubernetes certificates
+> Kubernetes and CLOUD NATIVE ASSOCIATE
+> CERTIFIED kubernetes ADMINISTRATOR
+> CERTIFIED kubernetes APPLICATION DEVELOPER
+
+Official kubernetes documentation can be refered at https://kubernetes.io
+
+Start kubeadm initialization with specified IP address range for Kubernetes pods
+```
+kubeadm init --pod-network-cidr=10.10.0.0/16 --kubernetes-version=1.26.0
+```
+
+Note the output below:
+```
+[control-plane] Using manifest folder "/etc/kubernetes/manifests"
+[control-plane] Creating static Pod manifest for "kube-apiserver"
+[control-plane] Creating static Pod manifest for "kube-controller-manager"
+[control-plane] Creating static Pod manifest for "kube-scheduler"
+```
+
+And note the prompt to start using the cluster
+```
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+```
+
+Then we can see the first node with name control-plane, and we can see it is not ready, because CNI is not ready.
+```
+kubectl get nodes
+```
+
+Set up CNI by using bridge plugins (Lab resources)
+```
+sleep 3 && cp /resources/cni/10-bridge.conf /etc/cni/net.d & watch kubectl get nodes -o wide
+```
+
+Note the NoSchedule taint in node description, that is to restrict workloads from being schedules on certain nodes
+```
+kubectl describe node control-plane | more
+```
+
+Here is okay to remove it as learning kubernetes
+```
+kubectl taint node control-plane node-role.kubernetes.io/control-plane:NoSchedule-
+```
+
