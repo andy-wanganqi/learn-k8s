@@ -265,3 +265,36 @@ env
 kubectl delete pod/alpine
 ```
 
+# 35. The Pause Container
+Every pod has a pause container. The pause container provides shared namespaces for containers. 
+
+Your favourite containers run inside the pod alongside the pause container providing a host like environment for containers.
+
+With an example of a pod providing a host for a pause container and other two that are a MySQL and Wordpress within the shared namespace.
+```
+docker run --rm -d --ipc=shareable --name pause -p 8080:80 registry.k8s.io/pause:3.9
+docker run --rm -d --name mysql -e MYSQL_DATABASE=exampledb -e MYSQL_USER=exampleuser -e MYSQL_PASSWORD=examplepass -e MYSQL_RANDOM_ROOT_PASSWORD=1 --net=container:pause --ipc=container:pause --pid=container:pause mysql:8
+docker run --rm -d --name wordpress -e WORDPRESS_DB_HOST="127.0.0.1" -e WORDPRESS_DB_USER=exampleuser -e WORDPRESS_DB_PASSWORD=examplepass -e WORDPRESS_DB_NAME=exampledb --net=container:pause --ipc=container:pause --pid=container:pause wordpress:6.1.1
+```
+
+We can test the shared memory between two containers inside the pod:
+```
+docker exec -it mysql sh
+echo hello > /dev/shm/test
+docker exec -it wordpress sh
+cat /dev/shm/test
+```
+
+We can see all the containers running with a PID when we go into any container. And if we kill the paused one, then all of them inside the pod will exit.
+```
+ps -ef
+kill 1
+```
+
+Think of the pause container as allowing container processes to be running and visible to each other. As if you had started different processes on your main system, they will share the same network and will be able to communicate using IPC.
+
+Last one, use this to clean up the pod above.
+```
+docker stop pause mysql wordpress
+```
+
