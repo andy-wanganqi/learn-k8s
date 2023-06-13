@@ -375,3 +375,33 @@ The same yaml file can also be used to delete container
 ```
 kubectl delete --grace-period=0 -f /etc/kubernetes/resources/nginx_pod.yaml
 ```
+
+# 44. Kubernetes Deployments
+Deployment is a declarative means for defining a desired state.
+
+We can use deployments to specify how an application should run as well as the number of replicas that should be running.
+
+Deployments also provide useful interaction points for other areas in k8s such as Services.
+
+Here is an example to create a nginx deployment with port 80
+```
+kubectl create deployment nginx --image=nginx --port 80
+kubectl get deployment
+kubectl get replicaset
+```
+
+A ReplicaSet is automatically created with the deployment. ReplicaSet is a **controller** that ensures that a specified number of replica pods are running and available at all times.
+
+A ReplicaSet creates and manages a set of identical Pod replicas, and is responsible for scaling the number of replicas up or down based on the desired state specified in the Kubernetes configuration.
+
+In order to scale deployment, we can use:
+```
+kubectl scale deployment/nginx --replicas=2; watch kubectl get pods -o wide
+```
+
+Extra things, using kubectl edit to modify the deployment, and then use kubectl describe, use kubectl rollout status to check status.
+```
+kubectl edit deployment/nginx
+kubectl describe deployment/nginx
+kubectl rollout status deployment/nginx
+```
