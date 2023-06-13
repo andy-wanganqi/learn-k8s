@@ -1,3 +1,8 @@
+# Start
+Here is some resources for this course
+* DiveInto Community[https://communityinviter.com/apps/diveintocommunity/join-diveinto]
+* GitHub DiveIntoKubernetes Discussions[https://github.com/spurin/diveintokubernetes/discussions]
+
 # 7. Container Images
 
 > Pull container image
@@ -298,3 +303,29 @@ Last one, use this to clean up the pod above.
 docker stop pause mysql wordpress
 ```
 
+# 37. Kubernetes Pod Networking (Lab Resources)
+List all paused k8s containers
+```
+nerdctl -n k8s.io ps -a | grep -v pause
+```
+
+We can use this way to grab the container id of the un-paused nginx container into NGINXID
+```
+NGINXID=$(nerdctl -n k8s.io ps -a | grep nginx | grep -v pause | awk {'print $1'}); echo $NGINXID
+```
+
+If we stop a nginx container in a pod, then it will recreate the nginx container.
+```
+nerdctl -n k8s.io stop $NGINXID; watch kubectl get pods -o wide
+```
+
+Bug if we stop the pause container in the pod, then k8s will recreate the pause container and the nginx container, but with different IP.
+```
+nerdctl -n k8s.io ps -a | grep nginx | grep pause
+nerdctl -n k8s.io stop $PAUSEID; watch kubectl get pods -o wide
+```
+
+Then we can clean up the nginx container
+```
+kubectl delete pod/nginx --grace-period=0
+```
