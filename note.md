@@ -329,3 +329,49 @@ Then we can clean up the nginx container
 ```
 kubectl delete pod/nginx --grace-period=0
 ```
+
+# 41. Kubernetes YAML
+We can generate output of the equivalent yaml by using --dry-run with a kubernetes command:
+```
+kubectl run nginx --image=nginx --dry-run=client -o yaml > /etc/kubernetes/nginx_pod.yaml
+```
+
+Or we can choose a pod and output the yaml file
+```
+kubectl run alpine --image=alpine
+kubectl get pod alpine -o yaml > /etc/kubernetes/alpine_pod.yaml
+```
+
+And the yaml file will be like:
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+```
+
+Then kubectl apply and kubectl create can be used to manage resources with yaml file
+> kubectl apply
+kubectl apply: is used to create or update resources based on the contents of a YAML or JSON file. It will first check if a resource with the same name and namespace already exists in the cluster. If it does, it will udpate the existing resource with the new configuration. If it does not , it will create a new resource with the specified configuration.
+```
+kubectl apply -f /etc/kubernetes/resources/nginx_pod.yaml
+```
+
+> kubectl create
+kbuectl create: is used to create new resources based on the contents of a YAML or JSON file. It will not check if a resource with the same name and namespace already exists in the cluster. If it does, it will return an error and the resource will not be created. This command is useful if you want to ensure that a new resource is created, even if one with the same name and namespace already exists in the cluster.
+
+The same yaml file can also be used to delete container
+```
+kubectl delete --grace-period=0 -f /etc/kubernetes/resources/nginx_pod.yaml
+```
