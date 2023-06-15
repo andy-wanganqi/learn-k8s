@@ -564,4 +564,9 @@ ETCDCTL_API=3 etcdctl --endpoints https://172.19.0.2:2379 --cacert /etc/kubernet
 ETCDCTL_API=3 etcdctl --endpoints https://172.19.0.2:2379 --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key get foo
 ```
 
+# 59. Kube-Apiserver
+Kube-Apiserver validates and configures data for API objects including pods, services, replication controllers and more.
+
+Kube-Apiservcer services REST operations and acts as the frontend to the cluster's shared state through which all components interact.
+
 
