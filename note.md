@@ -583,6 +583,6 @@ A control loop is a non-terminating loop that regulates the state of the system.
 
 Controller-Manager monitors the state of the cluster through the kube-apiserver and makes changes accordingly to change the state to the desired state.
 
-
-
+# 65. Kube-Proxy
+Kube-Proxy provides simple TCP, UDP and SCTP stream forwarding, round-robin TCP, UDP and SCTP forwarding across a set of backends.
 
