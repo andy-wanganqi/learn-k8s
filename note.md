@@ -376,7 +376,7 @@ The same yaml file can also be used to delete container
 kubectl delete --grace-period=0 -f /etc/kubernetes/resources/nginx_pod.yaml
 ```
 
-# 44. Kubernetes Deployments
+# 44. Kubernetes Deployments (and ReplicaSet)
 Deployment is a declarative means for defining a desired state.
 
 We can use deployments to specify how an application should run as well as the number of replicas that should be running.
@@ -575,6 +575,13 @@ Kube-Scheduler is a control plane process that assigns pods to nodes (kubelets).
 Kube-Scheduler determines which nodes are valid according to constraints and available resources.
 
 Kube-Scheduler ranks each valid node and binds the pod to the most suitable node.
+
+# 63. Controller-Manager
+Controller-Manager is a daemon that embeds the core control loops shipped with kubernetes.
+
+A control loop is a non-terminating loop that regulates the state of the system.
+
+Controller-Manager monitors the state of the cluster through the kube-apiserver and makes changes accordingly to change the state to the desired state.
 
 
 
