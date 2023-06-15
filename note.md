@@ -480,3 +480,46 @@ kubectl delete deployment/nginx
 kubectl delete service/nginx
 kubectl delete --grace-period=0 pod/hello-world pod/curl
 ```
+
+# 53. Kubernetes Architecture Dissection
+Use these commands to check the contains in containerd, and the pause pods in kubernetes. As well as kubelet is aside.
+```
+nerdctl -n k8s.io ps -a | grep -v pause | grep Up
+kubectl get all -A
+
+ps -ef | grep kubelet | grep -v kube-apiserver | grep -v grep
+```
+
+Then we can check those kube-system things into yaml.
+```
+kubectl -n kube-system get deamonset.apps/kube-proxy -o yaml > /etc/kubernetes/resources/kube-proxy.yaml
+```
+kube-proxy has DESIRED, CURRENT, READY numbers which will map the number of pods.
+
+```
+kubectl -n kube-system get deamonset.apps/kube-dns -o yaml > /etc/kubernetes/resources/kube-dns.yaml
+kubectl -n kube-system get deamonset.apps/coredns -o yaml > /etc/kubernetes/resources/coredns.yaml
+```
+These two provide the dns service.
+
+We also have the kubelet, running as an independent process under systemctl.
+```
+ps -ef | grep kubelet | grep -v kube-apiserver | grep -v grep
+systemctl status kubelet
+```
+
+If we move the kubernetes manifests, then other kube-* static pods will have stopped
+```
+mv /etc/kubernetes/manifests/* /etc/kubernetes/resources
+```
+
+Below are two commands used to stop and remove anything that is running within containerd
+```
+alias nerdctl_stopall="nerdctl -n k8s.io ps -a | grep -v CONTAINER | cut -d ' ' -f 1 | xargs -i sh -c 'nerdctl -n k8s.io stop {} || true'"
+alias nerdctl_rmall="nerdctl -n k8s.io ps -a | grep -v CONTAINER | cut -d ' ' -f 1 | xargs -i sh -c 'nerdctl -n k8s.io rm {} || true'"
+
+nerdctl_stopall
+nerdctl_rmall
+```
+
+So far, only containerd is running.
