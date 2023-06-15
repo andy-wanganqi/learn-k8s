@@ -586,3 +586,13 @@ Controller-Manager monitors the state of the cluster through the kube-apiserver 
 # 65. Kube-Proxy
 Kube-Proxy provides simple TCP, UDP and SCTP stream forwarding, round-robin TCP, UDP and SCTP forwarding across a set of backends.
 
+# 67. CoreDNS and KubeDNS
+coredns is a Go(lang) based DNS server that stores DNS records and answers domain name queries.
+
+kube-dns is the name of the service that serves on port 53 for TCP/UDP (Standard DNS), this points at the coredns pods.
+
+Historically, kube-dns was a DNS server in Kubernetes <= v1.11
+
+The service name of kube-dns was by design, kept for compatibility purposes.
+
+
