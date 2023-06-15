@@ -422,7 +422,7 @@ kubectl get service
 IP=$(kubectl get service | grep nginx | awk {'print $3'}); echo $IP
 curl $IP
 ```
-The service will have a name nginx-service, and a DNS name nginx-service.default.svc.cluster.local would be available later.
+The service will have a name nginx-service, and a DNS name nginx-service.default.svc.cluster.local would be available inside cluster.
 
 ## NodePort
 This type of service exposes the service on a specific port on each node in the cluster. This allows external traffic to access the service by connecting to any node IP and the specified port.
@@ -436,4 +436,47 @@ This type of service creates a CNAME record that maps a service name to an exter
 ## Headless Service
 This type of service is similar to a ClusterIP service but does not create a virtual IP. Instead, it allows you to directly access individual pods, useful for scenarios where you need direct communication between pods and/or fine-grained control over load balancing.
 
+# 50. Kubernetes DNS
+Kubernetes is provided with a built-in DNS service that automatically assigns DNS names to Services and Pods in the cluster.
+```
+<servicename>.<namespace>.svc.cluster.local
+<podname>.<namespace>.pod.cluster.local
+```
 
+A example of a pod with IP 10.10.0.50 will have DNS name:
+```
+10-10-0-50.default.pod.cluster.local
+```
+
+Below is an example to show the pods can communicate with each other
+```
+kubectl run hello-world --image=gcr.io/google-samples/hello-app:1.0 --port 8080
+HELLO_IP=$(kubectl get pods -o wide | grep hello-world | awk {'print $6'}); echo $HELLO_IP
+curl $HELLO_IP:8080
+kubectl run curl --image=curlimages/curl --restart=Never -- sh -c "sleep infinity"
+```
+Above is to run two pods, one is listening to 8080, and the other one will curl to the previous one.
+
+```
+kcurl() { kubectl exec -it curl -- sh -c "curl $1"; }
+knslookup() { kubectl exec -it curl -- sh -c "nslookup $1"; }
+kcurl example.com
+knslookup example.com
+```
+Above is to create two functions, and then we can test them against example.com. These functions are indeed exeucting inside from the pod.
+
+```
+kcurl nginx.default.svc.cluster.local
+knslookup nginx.default.svc.cluster.local
+HELLO_IP_DASHES=$(echo $HELLO_IP | sed 's/\./-/g'); echo $HELLO_IP_DASHES
+kcurl $HELLO_IP_DASHES.default.pod.cluster.local:8080
+knslookup $HELLO_IP_DASHES.default.pod.cluster.local
+```
+Then we can check whether the kubernetes DNS is working against service and pod.
+
+Eventually we can clean up these resources.
+```
+kubectl delete deployment/nginx
+kubectl delete service/nginx
+kubectl delete --grace-period=0 pod/hello-world pod/curl
+```
