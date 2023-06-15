@@ -569,4 +569,13 @@ Kube-Apiserver validates and configures data for API objects including pods, ser
 
 Kube-Apiservcer services REST operations and acts as the frontend to the cluster's shared state through which all components interact.
 
+# 61. Kube-Scheduler
+Kube-Scheduler is a control plane process that assigns pods to nodes (kubelets).
+
+Kube-Scheduler determines which nodes are valid according to constraints and available resources.
+
+Kube-Scheduler ranks each valid node and binds the pod to the most suitable node.
+
+
+
 
