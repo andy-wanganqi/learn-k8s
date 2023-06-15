@@ -541,3 +541,27 @@ cat /var/lib/kubelet/config.yaml
 ```
 Then we can see the static pods config is mapping to /etc/kubernetes/manifests.
 
+# 57. etcd
+etcd is consistent and highly available key value store, used as the kubernetes backing store for all cluster data.
+
+etcd is a leader based distribution system. When running in production a five-member cluster is recommended.
+
+etcdctl is the tool to manage etcd. We can install that in ubuntu:
+```
+apt update && apt install -y etcd-client
+```
+
+To start using etcdctl, we need to check certs and keys:
+```
+ps -ef | grep etcd
+ETCDCTL_API=3 etcdctl --endpoints https://172.19.0.2:2379 --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key --write-out=table endpoint status
+```
+
+And then we can put a key-value into and get the value by key:
+```
+ETCDCTL_API=3 etcdctl --endpoints https://172.19.0.2:2379 --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key put foo bar
+
+ETCDCTL_API=3 etcdctl --endpoints https://172.19.0.2:2379 --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key get foo
+```
+
+
