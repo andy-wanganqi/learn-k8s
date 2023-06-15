@@ -595,4 +595,5 @@ Historically, kube-dns was a DNS server in Kubernetes <= v1.11
 
 The service name of kube-dns was by design, kept for compatibility purposes.
 
-
+# 69. Conclusion and Architectural Diagrams
+Kubernetes is a community and it supports many architecturs.
