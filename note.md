@@ -523,3 +523,21 @@ nerdctl_rmall
 ```
 
 So far, only containerd is running.
+
+# 55. Kubelet and Static Pods
+Kubelet is primary 'node agent' that runs on each node. 
+
+In Kubernetes, the kubelet is often referred to as the 'worker'.
+
+Kubelet ensures that containers are running in a pod.
+
+Kubelet runs both pods and 'static pods'.
+
+use systemctl to run kubelet, and we can see it running with a config
+```
+systemctl start kubelet
+ps -ef | grep kubelet
+cat /var/lib/kubelet/config.yaml
+```
+Then we can see the static pods config is mapping to /etc/kubernetes/manifests.
+
