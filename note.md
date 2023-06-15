@@ -405,3 +405,35 @@ kubectl edit deployment/nginx
 kubectl describe deployment/nginx
 kubectl rollout status deployment/nginx
 ```
+
+# 47. Kubernetes Services
+Kubernetes Services are a way to expose your application running on a set of pods as a network service.
+
+Services provide a stable endpoint for external clients to access the application, as well as load balancing and service discovery.
+
+## Cluster IP Service
+This is the default type of service and creates a virtual IP (VIP) that is only accessible within the cluster.
+
+This type of service is useful for communication between different parts of your application that are running in the cluster.
+
+```
+kubectl expose deployment/nginx --type=ClusterIP --name=nginx-service
+kubectl get service
+IP=$(kubectl get service | grep nginx | awk {'print $3'}); echo $IP
+curl $IP
+```
+The service will have a name nginx-service, and a DNS name nginx-service.default.svc.cluster.local would be available later.
+
+## NodePort
+This type of service exposes the service on a specific port on each node in the cluster. This allows external traffic to access the service by connecting to any node IP and the specified port.
+
+## LoadBalancer
+This type of service creates a load balancer in the cloud provider's infrastructure (such as an AWS ELB or a Google Cloud Load Balancer) and forwards traffic to the service. This is useful for exposing your application to external clients.
+
+## ExternalName
+This type of service creates a CNAME record that maps a service name to an external DNS name. This is useful for connecting to services that are NOT in your cluster, such as a database running in a different cluster or a different cloud provider.
+
+## Headless Service
+This type of service is similar to a ClusterIP service but does not create a virtual IP. Instead, it allows you to directly access individual pods, useful for scenarios where you need direct communication between pods and/or fine-grained control over load balancing.
+
+
